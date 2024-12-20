@@ -1,0 +1,62 @@
+name: Build version release
+
+on:
+  workflow_call:
+    inputs:
+      additional-project-paths:
+        required: false
+        type: string
+        default: '[]'
+      project-path:
+        required: true
+        type: string
+      game-version:
+        required: true
+        type: string
+      additional-sources:
+        required: false
+        type: string
+        default: '{}'
+
+jobs:
+  build_version_release:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Add NuGet source
+      run: dotnet nuget update source "Aeroluna Github Packages" --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
+
+    - name: Restore dependencies
+      run: dotnet restore ${{ inputs.project-path }}
+
+    - name: Initialize modding environment
+      uses: beat-forge/init-beatsaber@v1
+      with:
+        path: ${{ runner.temp }}\BeatSaberReferenceAssemblies # it is VERY IMPORTANT that this be a backslash or else ResolveAssemblyReferences will not recognize it properly as a TargetFrameworkDirectory
+        version: ${{ inputs.game-version }}
+
+    - name: Download Beatmods dependencies
+      uses: Aeroluna/download-beatmods-deps@main
+      with:
+        game-version: ${{ inputs.game-version }}
+        project-path: ${{ inputs.project-path }}
+        project-configuration: Release-${{ inputs.game-version }}
+        additional-project-paths: ${{ inputs.additional-project-paths }}
+        additional-sources: ${{ inputs.additional-sources }}
+
+    - name: Build
+      id: build
+      run: dotnet build ${{ inputs.project-path }} --no-restore -c Release-${{ inputs.game-version }}
+
+    - name: Upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ steps.build.outputs.filename }}
+        path: ${{ steps.build.outputs.artifactpath }}

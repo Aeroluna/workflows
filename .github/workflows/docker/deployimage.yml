@@ -1,0 +1,32 @@
+name: Deploy image
+
+on:
+  workflow_call:
+    inputs:
+      work-dir:
+        required: true
+        type: string
+        
+jobs:
+  deploy_image:
+    name: Deploy image
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy image
+      uses: appleboy/ssh-action@v1.2.0
+      env:
+        USERNAME: ${{ github.actor }}
+        PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+        WORK_DIR: ${{ inputs.work-dir }}
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
+        envs: USERNAME, PASSWORD, WORK_DIR
+        script: |
+          echo $PASSWORD | docker login ghcr.io -u $USERNAME --password-stdin
+          cd ~/$WORK_DIR
+          docker compose pull
+          docker compose up -d
+          docker logout ghcr.io
