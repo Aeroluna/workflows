@@ -9,7 +9,7 @@ on:
       image-name:
         required: true
         type: string
-      project-path:
+      context:
         required: false
         type: string
         default: '.'
@@ -40,7 +40,7 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
       with:
-        context: ${{ inputs.project-path }}
+        context: ${{ inputs.context }}
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
