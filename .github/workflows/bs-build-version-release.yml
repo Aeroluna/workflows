@@ -16,7 +16,7 @@ on:
       additional-sources:
         required: false
         type: string
-        default: '{}'
+        default: '[]'
 
 jobs:
   build_version_release:
