@@ -24,7 +24,7 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-      
+
     - name: Setup dotnet
       uses: actions/setup-dotnet@v4
       with:
@@ -41,6 +41,7 @@ jobs:
       with:
         path: ${{ runner.temp }}\BeatSaberReferenceAssemblies # it is VERY IMPORTANT that this be a backslash or else ResolveAssemblyReferences will not recognize it properly as a TargetFrameworkDirectory
         version: ${{ inputs.game-version }}
+        repo: Aeroluna/beatsaber-stripped
 
     - name: Download Beatmods dependencies
       uses: Aeroluna/download-beatmods-deps@main
