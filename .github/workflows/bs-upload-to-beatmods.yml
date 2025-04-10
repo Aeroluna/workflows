@@ -29,7 +29,7 @@ jobs:
           for i in */; do (cd $i; zip -r "../${i%/}.zip" ./); done
 
       - name: Upload artifacts
-        uses: Aeroluna/beatmods-upload@main
+        uses: Aeroluna/beatmods-upload@dev
         with:
           path: ${{ steps.download_artifacts.outputs.download-path }}
           mods: ${{ inputs.mods }}

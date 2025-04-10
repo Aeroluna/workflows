@@ -44,7 +44,7 @@ jobs:
         repo: Aeroluna/beatsaber-stripped
 
     - name: Download Beatmods dependencies
-      uses: Aeroluna/download-beatmods-deps@main
+      uses: Aeroluna/download-beatmods-deps@dev
       with:
         game-version: ${{ inputs.game-version }}
         project-path: ${{ inputs.project-path }}
