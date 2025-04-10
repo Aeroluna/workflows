@@ -1,0 +1,36 @@
+name: Upload to Beatmods
+
+on:
+  workflow_call:
+    inputs:
+      mods:
+        required: true
+        type: string
+    secrets:
+      token:
+        required: true
+
+jobs:
+  upload_to_beatmods:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download artifacts
+        id: download_artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Zip artifacts
+        run: |
+          cd ${{ steps.download_artifacts.outputs.download-path }}
+          for i in */; do (cd $i; zip -r "../${i%/}.zip" ./); done
+
+      - name: Upload artifacts
+        uses: Aeroluna/beatmods-upload@main
+        with:
+          path: ${{ steps.download_artifacts.outputs.download-path }}
+          mods: ${{ inputs.mods }}
+          token: ${{ secrets.token }}
