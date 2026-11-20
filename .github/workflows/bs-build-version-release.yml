@@ -25,11 +25,16 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
     - name: Add NuGet source
-      run: nuget update source "Aeroluna Github Packages" --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
+      run: dotnet nuget update source "Aeroluna Github Packages" --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
 
     - name: Restore dependencies
-      run: nuget restore ${{ inputs.project-path }}
+      run: dotnet restore ${{ inputs.project-path }}
 
     - name: Initialize modding environment
       uses: beat-forge/init-beatsaber@v1
@@ -52,7 +57,7 @@ jobs:
 
     - name: Build
       id: build
-      run: msbuild ${{ inputs.project-path }} -p:Configuration=Release-${{ inputs.game-version }}
+      run: msbuild ${{ inputs.project-path }} -p:RestorePackages=false -p:Configuration=Release-${{ inputs.game-version }}
 
     - name: Upload
       uses: actions/upload-artifact@v4
