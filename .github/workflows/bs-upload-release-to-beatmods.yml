@@ -1,0 +1,32 @@
+name: Upload release to Beatmods
+
+on:
+  workflow_call:
+    inputs:
+      mods:
+        required: true
+        type: string
+    secrets:
+      token:
+        required: true
+
+jobs:
+  upload_release_to_beatmods:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download latest release
+        uses: robinraju/release-downloader@v1
+        with:
+          latest: true
+          fileName: '*'
+          out-file-path: releases
+
+      - name: Upload artifacts
+        uses: Aeroluna/beatmods-upload@main
+        with:
+          path: ./releases
+          mods: ${{ inputs.mods }}
+          token: ${{ secrets.token }}

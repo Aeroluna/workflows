@@ -52,9 +52,12 @@ jobs:
         additional-project-paths: ${{ inputs.additional-project-paths }}
         additional-sources: ${{ inputs.additional-sources }}
 
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v3
+
     - name: Build
       id: build
-      run: dotnet build ${{ inputs.project-path }} --no-restore -c Release
+      run: msbuild ${{ inputs.project-path }} -property:RestorePackages=false;Configuration=Release
 
     - name: Upload
       uses: actions/upload-artifact@v4
