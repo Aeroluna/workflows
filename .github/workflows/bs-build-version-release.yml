@@ -57,7 +57,7 @@ jobs:
 
     - name: Build
       id: build
-      run: msbuild ${{ inputs.project-path }} -property:RestorePackages=false;Configuration=Release-${{ inputs.game-version }}
+      run: msbuild ${{ inputs.project-path }} -p:RestorePackages=false -p:Configuration=Release-${{ inputs.game-version }}
 
     - name: Upload
       uses: actions/upload-artifact@v4
