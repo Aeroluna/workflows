@@ -6,6 +6,9 @@ on:
       mods:
         required: true
         type: string
+      extend-game-versions:
+        required: false
+        type: string
     secrets:
       token:
         required: true
@@ -29,4 +32,5 @@ jobs:
         with:
           path: ./releases
           mods: ${{ inputs.mods }}
+          extend-game-versions: ${{ inputs.extend-game-versions }}
           token: ${{ secrets.token }}
