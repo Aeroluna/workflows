@@ -8,6 +8,7 @@ on:
         type: string
       extend-game-versions:
         required: false
+        default: 'latest'
         type: string
     secrets:
       token:
